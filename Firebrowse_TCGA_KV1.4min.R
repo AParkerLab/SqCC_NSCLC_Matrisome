@@ -976,13 +976,41 @@ library("survminer")
 #test associations with clinical factors
 LUSC_Stage_fit<-survfit(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Stage),
                         data = LUSC_OS_cc)
+
+#Univariate association with survival for Matreotype clusters
 LUSC_CoreMatriClust_KmK3_fit<-survfit(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Km_K3),
                                       data = LUSC_OS_cc)
 LUSC_CoreMatriClust_KmK3_coxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Km_K3),
                                       data = LUSC_OS_cc)
 LUSC_CoreMatriClust_KmK3_coxph$coefficients
-summary(LUSC_CoreMatriClust_KmK3_coxph)$conf.int
-summary(pancan_molsubtype_coxph[[i]])$conf.int
+
+#Univariate association of clinical covariates
+LUSC_CoreMatriClust_Age_coxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~Age,
+                                     data = LUSC_OS_cc)
+summary(LUSC_CoreMatriClust_Age_coxph)$conf.int
+
+LUSC_CoreMatriClust_Gender_coxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Gender),
+                                        data = LUSC_OS_cc)
+summary(LUSC_CoreMatriClust_Gender_coxph)$conf.int
+
+LUSC_CoreMatriClust_Stage_coxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Stage),
+                                       data = LUSC_OS_cc)
+summary(LUSC_CoreMatriClust_Stage_coxph)$conf.int
+
+LUSC_CoreMatriClust_Smokingstatus_coxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Smokingstatus),
+                                               data = LUSC_OS_cc)
+summary(LUSC_CoreMatriClust_Smokingstatus_coxph)$conf.int
+
+LUSC_CoreMatriClust_Packyrs_coxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~Packyrs,
+                                         data = LUSC_OS_cc)
+summary(LUSC_CoreMatriClust_Packyrs_coxph)$conf.int
+
+#multivariate cox model
+#Age and Stage were significantly associated in univariate analysis above
+LUSC_CoreMatriClust_KmK3_multicoxph<-coxph(Surv(Timetoevent_5yrs, vital_status5yrs_numeric)~as.factor(LUSC_OS_cc$Km_K3)+as.factor(LUSC_OS_cc$Stage)+ Age,
+                                           data = LUSC_OS_cc)
+summary(LUSC_CoreMatriClust_KmK3_multicoxph)$conf.int
+
 
 #Early Stage: Combine all stage I and II samples 
 LUSC_OS_cc$Stage_EarlyLate<-as.factor(LUSC_OS_cc$Stage)
